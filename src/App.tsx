@@ -17,7 +17,7 @@ import {
 function App() {
   // State for sensor data
   const [sensorData, setSensorData] = useState({
-    vibration_level: "Danger",
+    vibration_level: "Safe",
     motor_voltage: "-",
     motor_current: "-",
     power_consumption: "-",
@@ -25,6 +25,7 @@ function App() {
     bottle_brightness: "-",
     good_product: 0,
     bad_product: 0,
+    status_sys: 1
   });
 
   // State for power system
@@ -50,6 +51,7 @@ const fetchData = async () => {
       bottle_brightness: sensorRes.data.bottle_brightness || "-",
       good_product: sensorRes.data.good_product || 0,
       bad_product: sensorRes.data.bad_product || 0,
+      status_sys: sensorRes.data.status_sys ?? 1
     });
     
     // We don't fetch or update power status here anymore
@@ -108,6 +110,13 @@ const resetCount = () => {
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    setPowerStatus({
+      status: sensorData.status_sys === 1,
+      reason: sensorData.status_sys === 1 ? "Normal" : "Emergency Shutdown"
+    });
+  }, [sensorData.status_sys]);
 
   return (
     <div className="min-h-screen bg-gray-100">

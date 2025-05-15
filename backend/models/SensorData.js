@@ -8,6 +8,7 @@ const SensorDataSchema = new mongoose.Schema({
   power_consumption: Number,
   bottle_mass: Number,
   bottle_brightness: Number,
+  status_sys: { type: Number, default: 1 },
   good_product: { type: Number, default: 0 },
   bad_product: { type: Number, default: 0 },
   timestamp: { type: Date, default: Date.now }
