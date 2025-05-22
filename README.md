@@ -137,7 +137,6 @@ mongodb://localhost:27017
 5. Pilih database `conveyor_final` (atau nama lainnya)
 6. Kamu akan melihat koleksi seperti:
    - `sensordatas`
-   - `systemstatuses`
 
 ---
 
