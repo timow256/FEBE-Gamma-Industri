@@ -3,9 +3,6 @@ const axios   = require('axios');
 const SensorData = require('../models/SensorData');
 const router  = express.Router();
 
-// ——————————————————————————————————
-// 1) Endpoint POST untuk testing via Postman
-// ——————————————————————————————————
 router.post('/', async (req, res) => {
   try {
     const data = req.body;

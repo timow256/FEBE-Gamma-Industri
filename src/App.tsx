@@ -34,6 +34,8 @@ function App() {
     reason: "",
   });
 
+  const [autoControl, setAutoControl] = useState(true);
+
   const [userPowerSelection, setUserPowerSelection] = useState(false);
 
   // Modify the fetchData function to respect user selection
@@ -54,9 +56,6 @@ const fetchData = async () => {
       status_sys: sensorRes.data.status_sys ?? 1
     });
     
-    // We don't fetch or update power status here anymore
-    // This prevents the polling from overriding the user's button selection
-    
   } catch (err) {
     console.error('Polling error:', err);
   }
@@ -67,7 +66,7 @@ const togglePower = async (on: boolean) => {
   try {
     // Update the user selection state
     setUserPowerSelection(on);
-    
+    setAutoControl(false); // menonaktifkan auto mode
     // Update the displayed power status immediately
     setPowerStatus({
       status: on,
@@ -99,24 +98,20 @@ const resetCount = () => {
     .catch(err => console.error('Reset error:', err));
 };
 
-  // Effect for data polling
-  useEffect(() => {
-    // Initial fetch
-    fetchData();
+useEffect(() => {
+  fetchData();
+  const intervalId = setInterval(fetchData, 1000);
+  return () => clearInterval(intervalId);
+}, []);
 
-    // Set up polling interval
-    const intervalId = setInterval(fetchData, 1000);
+useEffect(() => {
+  const statusToSet = sensorData.status_sys === 1;
 
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    setPowerStatus({
-      status: sensorData.status_sys === 1,
-      reason: sensorData.status_sys === 1 ? "Normal" : "Emergency Shutdown"
-    });
-  }, [sensorData.status_sys]);
+  setPowerStatus({
+    status: statusToSet,
+    reason: statusToSet ? "Normal" : "Emergency Shutdown"
+  });
+}, [sensorData.status_sys]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -124,15 +119,13 @@ const resetCount = () => {
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="flex items-center space-x-1">
-              <div className="grid grid-cols-2 gap-1">
-                <div className="w-3.5 h-3.5 bg-gradient-to-br from-pink-400 to-pink-600 rounded-sm"></div>
-                <div className="w-3.5 h-3.5 bg-gradient-to-br from-pink-400 to-pink-600 rounded-sm"></div>
-                <div className="w-3.5 h-3.5 bg-gradient-to-br from-pink-400 to-pink-600 rounded-sm"></div>
-                <div className="w-3.5 h-3.5 bg-gradient-to-br from-pink-400 to-pink-600 rounded-sm"></div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-3xl font-extrabold leading-none tracking-tight">
+                <span style={{ color: "#009bbf" }}>V</span>
+                <span className="text-black">G</span>
+              </h1>
             </div>
-            <h1 className="ml-4 text-xl font-semibold bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="ml-4 text-xl font-semibold text-black">
               Vendor Gamma
             </h1>
           </div>
