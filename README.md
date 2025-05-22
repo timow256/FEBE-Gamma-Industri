@@ -35,7 +35,7 @@ Pastikan sudah menginstal:
 
 ### 3️⃣ Buka Terminal & Install Dependensi
 
-Di dalam VS Code, buka terminal (`View → Terminal`), lalu jalankan:
+Di dalam VS Code, buka terminal (`View → Terminal`) *gunakan Command Prompt alih-alih menggunakan PowerShell untuk mencegah SecurityError, lalu jalankan:
 
 ```bash
 npm install
